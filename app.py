@@ -152,7 +152,7 @@ else:
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
-       st.markdown(f"""
+        st.markdown(f"""
         <div class='stCard'>
         <h3>Hasil Analisis Model (CNN - MobileNetV2)</h3>
         <p><b>Prediksi Spesies:</b> {kelas}</p>
@@ -218,7 +218,7 @@ else:
         
         # ===== GRAFIK KE PDF =====
         gbuf = io.BytesIO()
-        fig2.savefig(gbuf, format="PNG")
+        fig.savefig(gbuf, format="PNG")
         gbuf.seek(0)
         c.drawImage(ImageReader(gbuf), 120, 120, 350, 220)
 
