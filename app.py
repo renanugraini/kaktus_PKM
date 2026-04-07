@@ -71,7 +71,7 @@ def load_model(path):
 cnn_interpreter = load_model("modelcnn_kaktus.tflite")
 mobilenet_interpreter = load_model("mobilenetv2_kaktus.tflite")
 
-labels = ["Astrophytum Asteria", "Ferocactus", "Gymnocalycium"]
+labels = ["Astrophytum Asteria", "Cereus", "Ferocactus", "Gymnocalycium", "Opuntia"]
 
 # =========================================================
 # PREDICTION FUNCTION
@@ -130,8 +130,10 @@ if menu == "Informasi Kaktus":
 <h3>Jenis Kaktus Tanaman Hias:</h3>
 <ul>
     <li>Astrophytum Asteria.</li>
+    <li>Cereus.</li>
     <li>Ferocactus.</li>
     <li>Gymnocalycium.</li>
+    <li>Opuntia.</li>
 </ul>
 
 """, unsafe_allow_html=True)
