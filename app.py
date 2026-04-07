@@ -136,7 +136,6 @@ if menu == "Informasi Kaktus":
 # =========================================================
 else:
     st.markdown("<h1 class='stCard'>🔍 Prediksi Jenis Kaktus</h1>", unsafe_allow_html=True)
-
     uploaded = st.file_uploader("Upload gambar kaktus", type=["jpg","jpeg","png"])
 
     if uploaded:
@@ -145,19 +144,18 @@ else:
 
         # PREDIKSI (Menggunakan model_kaktus yang sudah di-load)
         preds = predict(img, model_kaktus)
-
         # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
         # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
         probs = preds / np.sum(preds)
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
-        st.markdown(f"""
+    st.markdown(f"""
         <div class='stCard'>
         <h3>Hasil Analisis Model (CNN - MobileNetV2)</h3>
         <p><b>Prediksi Spesies:</b> {kelas}</p>
         <p><b>Confidence:</b> {conf:.2%}</p>
-        <p>Metode yang digunakan adalah arsitektur MobileNetV2 berbasis algoritma CNN.</p>
+        <p>Metode yang digunakan adalah algoritma CNN dengan arsitekstur MobileNetV2.</p>
         </div>
         """, unsafe_allow_html=True)
 
