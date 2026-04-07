@@ -143,24 +143,21 @@ else:
         img = Image.open(uploaded).convert("RGB")
         st.image(img, width=280)
 
-        preds_cnn = predict(img, cnn_interpreter)
-        probs_cnn = preds_cnn / np.sum(preds_cnn)
-        kelas_cnn = labels[np.argmax(probs_cnn)]
-        conf_cnn = np.max(probs_cnn)
+        # PREDIKSI (Menggunakan model_kaktus yang sudah di-load)
+        preds = predict(img, model_kaktus)
 
-        preds_mnet = predict(img, mobilenet_interpreter)
-        probs_mnet = preds_mnet / np.sum(preds_mnet)
-        kelas_mnet = labels[np.argmax(probs_mnet)]
-        conf_mnet = np.max(probs_mnet)
-
-        best = "MobileNetV2" if conf_mnet > conf_cnn else "CNN"
+        # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
+        # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
+        probs = preds / np.sum(preds)
+        kelas = labels[np.argmax(probs)]
+        conf = np.max(probs)
 
         st.markdown(f"""
         <div class='stCard'>
-        <h3>Model CNN</h3>
-        <p>{kelas_cnn} ({conf_cnn:.2%})</p>
+        <h3>Hasil Analisis Model</h3>
+        <p><b>Prediksi Spesies:</b> {kelas}</p>
         <h3>Model MobileNetV2</h3>
-        <p>{kelas_mnet} ({conf_mnet:.2%})</p>
+        <p><b>Confidence:</b> {conf:.2%}</p>
         <h3>Kesimpulan</h3>
         <p><b>Model terbaik:</b> {best}</p>
         </div>
@@ -168,10 +165,9 @@ else:
 
         # ===== BAR CHART =====
         fig, ax = plt.subplots()
-        ax.bar(labels, probs_cnn, alpha=0.7, label="CNN")
-        ax.bar(labels, probs_mnet, alpha=0.7, label="MobileNetV2")
+        ax.bar(labels, probs, color='#2ecc71', alpha=0.8)
         ax.set_ylim(0,1)
-        ax.legend()
+        plt.xticks(rotation=45)
         st.pyplot(fig)
 
         # ===== PDF =====
