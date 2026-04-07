@@ -60,37 +60,30 @@ h1,h2,h3,p,label,li,b {color:white;}
 st.markdown(page_bg, unsafe_allow_html=True)
 
 # =========================================================
-# LOAD TFLITE MODELS
+# LOAD H5 MODEL
 # =========================================================
 @st.cache_resource
-def load_model(path):
-    interpreter = tf.lite.Interpreter(model_path=path)
-    interpreter.allocate_tensors()
-    return interpreter
+def load_keras_model():
+    # Pastikan file model_kaktus_final.h5 ada di folder yang sama
+    model = tf.keras.models.load_model('model_kaktus_final.h5')
+    return model
 
-cnn_interpreter = load_model("modelcnn_kaktus.tflite")
-mobilenet_interpreter = load_model("mobilenetv2_kaktus.tflite")
+model_kaktus = load_keras_model()
 
 labels = ["Astrophytum Asteria", "Cereus", "Ferocactus", "Gymnocalycium", "Opuntia"]
 
 # =========================================================
 # PREDICTION FUNCTION
 # =========================================================
-def predict(img, interpreter):
-    input_details = interpreter.get_input_details()
-    output_details = interpreter.get_output_details()
-
-    _, h, w, _ = input_details[0]["shape"]
-
-    image = img.resize((w, h))
+def predict(img, model):
+    # Resize ke 224x224 sesuai standar MobileNetV2
+    image = img.resize((224, 224))
     arr = np.array(image).astype("float32") / 255.0
     arr = np.expand_dims(arr, axis=0)
-
-    interpreter.set_tensor(input_details[0]["index"], arr)
-    interpreter.invoke()
-
-    return interpreter.get_tensor(output_details[0]["index"])[0]
-
+    
+    predictions = model.predict(arr)
+    return predictions[0]
+    
 # =========================================================
 # MENU
 # =========================================================
