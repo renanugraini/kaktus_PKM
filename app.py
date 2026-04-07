@@ -152,14 +152,12 @@ else:
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
-        st.markdown(f"""
+       st.markdown(f"""
         <div class='stCard'>
-        <h3>Hasil Analisis Model</h3>
+        <h3>Hasil Analisis Model (CNN - MobileNetV2)</h3>
         <p><b>Prediksi Spesies:</b> {kelas}</p>
-        <h3>Model MobileNetV2</h3>
         <p><b>Confidence:</b> {conf:.2%}</p>
-        <h3>Kesimpulan</h3>
-        <p><b>Model terbaik:</b> {best}</p>
+        <p>Metode yang digunakan adalah arsitektur MobileNetV2 berbasis algoritma CNN.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -180,16 +178,12 @@ else:
         c = canvas.Canvas(buffer, pagesize=A4)
         width, height = A4
 
-        c.setFont("Helvetica-Bold", 20)
-        c.drawString(40, height - 50, "Hasil Prediksi Kaktus")
-
         green_dark  = Color(0/255, 70/255, 32/255)
         green_main  = Color(56/255, 142/255, 60/255)
         green_light = Color(220/255, 240/255, 220/255)
 
         c.setFillColor(green_light)
         c.rect(0, 0, width, height, fill=1)
-
         c.setFillColor(green_main)
         c.rect(0, height-100, width, 100, fill=1)
 
@@ -197,30 +191,24 @@ else:
         c.setFont("Helvetica-Bold", 24)
         c.drawString(40, height-60, "🌵 Hasil Prediksi Kaktus")
 
+        # Card Putih
         c.setFillColor(Color(1,1,1))
         c.roundRect(40, 80, width-80, height-220, 20, fill=1)
 
+        # Foto Kaktus
         img_buf = io.BytesIO()
         img.save(img_buf, format="PNG")
         img_buf.seek(0)
         c.drawImage(ImageReader(img_buf), 60, height-420, 220, 220)
 
+        # Teks Detail
         c.setFillColor(green_dark)
         c.setFont("Helvetica-Bold", 16)
-        c.drawString(320, height-240, "Model CNN")
+        c.drawString(320, height-240, "Detail Klasifikasi")
         c.setFont("Helvetica", 13)
-        c.drawString(320, height-260, f"Prediksi : {kelas_cnn}")
-        c.drawString(320, height-280, f"Confidence : {conf_cnn:.2%}")
-
-        c.setFont("Helvetica-Bold", 16)
-        c.drawString(320, height-320, "Model MobileNetV2")
-        c.setFont("Helvetica", 13)
-        c.drawString(320, height-340, f"Prediksi : {kelas_mnet}")
-        c.drawString(320, height-360, f"Confidence : {conf_mnet:.2%}")
-
-        c.setFont("Helvetica-Bold", 14)
-        best_model = "MobileNetV2" if conf_mnet > conf_cnn else "CNN"
-        c.drawString(60, height-130, f"Kesimpulan: Model terbaik adalah {best_model}")
+        c.drawString(320, height-260, f"Prediksi : {kelas}")
+        c.drawString(320, height-280, f"Confidence : {conf:.2%}")
+        c.drawString(320, height-320, "Metode : CNN (MobileNetV2)")
 
         # ===== Footer =====
         c.setFont("Helvetica-Oblique", 10)
@@ -229,12 +217,6 @@ else:
 
         
         # ===== GRAFIK KE PDF =====
-        fig2, ax2 = plt.subplots()
-        ax2.bar(labels, probs_cnn, alpha=0.7, label="CNN")
-        ax2.bar(labels, probs_mnet, alpha=0.7, label="MobileNetV2")
-        ax2.set_ylim(0,1)
-        ax2.legend()
-
         gbuf = io.BytesIO()
         fig2.savefig(gbuf, format="PNG")
         gbuf.seek(0)
