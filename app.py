@@ -150,7 +150,7 @@ else:
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
-    st.markdown(f"""
+        st.markdown(f"""
         <div class='stCard'>
         <h3>Hasil Analisis Model (CNN - MobileNetV2)</h3>
         <p><b>Prediksi Spesies:</b> {kelas}</p>
