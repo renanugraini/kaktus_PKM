@@ -224,8 +224,10 @@ if menu == "Informasi Kaktus":
 <h3>Jenis Kaktus Tanaman Hias:</h3>
 <ul>
     <li>Astrophytum Asteria.</li>
+    <li>Cereus.</li>
     <li>Ferocactus.</li>
     <li>Gymnocalycium.</li>
+    <li>Opuntia.</li>
 </ul>
 
 """, unsafe_allow_html=True)
