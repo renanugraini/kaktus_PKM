@@ -235,42 +235,39 @@ if menu == "Informasi Kaktus":
 # =========================================================
 # PAGE 2: PREDIKSI KAKTUS
 # =========================================================
-elif menu == "Prediksi Kaktus":
+else:
     st.markdown("<h1 class='stCard'>🔍 Prediksi Jenis Kaktus</h1>", unsafe_allow_html=True)
-    st.write("Upload gambar kaktus untuk diklasifikasikan menggunakan model CNN.")
-
-    uploaded = st.file_uploader("Upload Gambar", type=["jpg","png","jpeg"])
+    uploaded = st.file_uploader("Upload gambar kaktus", type=["jpg","jpeg","png"])
 
     if uploaded:
         img = Image.open(uploaded).convert("RGB")
+        st.image(img, width=280)
 
-        st.markdown("<h3 style='text-align:center;'>Gambar yang diupload</h3>", unsafe_allow_html=True)
-        st.image(img, width=280, caption="Preview", use_container_width=False)
-
-        preds = predict(img)
+        # PREDIKSI (Menggunakan model_kaktus yang sudah di-load)
+        preds = predict(img, model_kaktus)
+        # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
+        # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
         probs = preds / np.sum(preds)
         kelas = labels[np.argmax(probs)]
+        conf = np.max(probs)
 
-        st.markdown(
-            f"""
-            <div class='stCard'>
-                <h2>Hasil Prediksi</h2>
-                <p><b>Jenis Kaktus:</b> {kelas}</p>
-                <p><b>Probabilitas:</b></p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+        st.markdown(f"""
+        <div class='stCard'>
+        <h3>Hasil Analisis Model (CNN - MobileNetV2)</h3>
+        <p><b>Prediksi Spesies:</b> {kelas}</p>
+        <p><b>Confidence:</b> {conf:.2%}</p>
+        <p>Metode yang digunakan adalah algoritma CNN dengan arsitekstur MobileNetV2.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
         # ===== BAR CHART =====
-        fig, ax = plt.subplots(figsize=(6,4))
-        ax.bar(labels, probs)
+        fig, ax = plt.subplots()
+        ax.bar(labels, probs, color='#2ecc71', alpha=0.8)
         ax.set_ylim(0,1)
-        ax.set_ylabel("Probabilitas")
-        ax.set_title("Probabilitas per Kelas")
+        plt.xticks(rotation=45)
         st.pyplot(fig)
 
-        # ===== GENERATE PDF TEMA HIJAU + GRAFIK =====
+        # ===== PDF =====
         buffer = io.BytesIO()
         from reportlab.pdfgen import canvas
         from reportlab.lib.pagesizes import A4
@@ -280,80 +277,55 @@ elif menu == "Prediksi Kaktus":
         c = canvas.Canvas(buffer, pagesize=A4)
         width, height = A4
 
-        # ===== Warna Tema =====
-        green_dark  = Color(0/255, 70/255, 32/255)
-        green_main  = Color(56/255, 142/255, 60/255)
-        green_light = Color(200/255, 230/255, 201/255)
-
-        # ===== Background =====
+        green_dark = Color(0/255, 70/255, 32/255)
+        green_main = Color(56/255, 142/255, 60/255)
+        green_light = Color(220/255, 240/255, 220/255)
+        
         c.setFillColor(green_light)
         c.rect(0, 0, width, height, fill=1)
-
-        # ===== HEADER =====
         c.setFillColor(green_main)
-        c.rect(0, height - 120, width, 120, fill=1)
+        c.rect(0, height-100, width, 100, fill=1)
 
         c.setFillColor(Color(1,1,1))
-        c.setFont("Helvetica-Bold", 28)
-        c.drawString(40, height - 70, "🌵 Hasil Prediksi Kaktus")
-
-        # ===== Card Utama =====
-        c.setFillColor(Color(1,1,1))
-        c.roundRect(40, 80, width - 80, height - 220, 20, fill=1)
-
-        # ===== Gambar Kaktus =====
-        img_bytes = io.BytesIO()
-        img.save(img_bytes, format="PNG")
-        img_bytes.seek(0)
-        cactus_img = ImageReader(img_bytes)
-
-        c.drawImage(cactus_img, 60, height - 450, width=220, height=220)
-
-        # ===== Teks Hasil =====
-        c.setFillColor(green_dark)
-        c.setFont("Helvetica-Bold", 20)
-        c.drawString(300, height - 260, "Jenis Kaktus:")
-
         c.setFont("Helvetica-Bold", 24)
-        c.drawString(300, height - 290, f"{kelas}")
+        c.drawString(40, height-60, "🌵 Hasil Prediksi Kaktus")
 
-        c.setFont("Helvetica-Bold", 18)
-        c.drawString(300, height - 340, "Probabilitas:")
+        # Card Putih
+        c.setFillColor(Color(1,1,1))
+        c.roundRect(40, 80, width-80, height-220, 20, fill=1)
 
-        c.setFont("Helvetica", 14)
-        y_prob = height - 370
-        for lbl, prob in zip(labels, probs):
-            c.drawString(300, y_prob, f"- {lbl}: {prob:.4f}")
-            y_prob -= 22
+        # Foto Kaktus
+        img_buf = io.BytesIO()
+        img.save(img_buf, format="PNG")
+        img_buf.seek(0)
+        c.drawImage(ImageReader(img_buf), 60, height-420, 220, 220)
 
-        # ===== GRAFIK PROBABILITAS KE PDF =====
-        fig2, ax2 = plt.subplots(figsize=(4,3))
-        ax2.bar(labels, probs)
-        ax2.set_ylim(0,1)
-        ax2.set_ylabel("Probabilitas")
-        ax2.set_title("Grafik Probabilitas Kelas")
-
-        graph_buf = io.BytesIO()
-        fig2.savefig(graph_buf, format="PNG", bbox_inches="tight")
-        graph_buf.seek(0)
-        graph_img = ImageReader(graph_buf)
-
-        # Tempel grafik ke PDF
-        c.drawImage(graph_img, 140, 120, width=300, height=200)
+        # Teks Detail
+        c.setFillColor(green_dark)
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(320, height-240, "Detail Klasifikasi")
+        c.setFont("Helvetica", 13)
+        c.drawString(320, height-260, f"Prediksi : {kelas}")
+        c.drawString(320, height-280, f"Confidence : {conf:.2%}")
+        c.drawString(320, height-320, "Metode : CNN (MobileNetV2)")
 
         # ===== Footer =====
         c.setFont("Helvetica-Oblique", 10)
         c.setFillColor(green_dark)
         c.drawString(40, 60, "Generated by Kaktus Classifier App")
+        
+        # ===== GRAFIK KE PDF =====
+        gbuf = io.BytesIO()
+        fig.savefig(gbuf, format="PNG")
+        gbuf.seek(0)
+        c.drawImage(ImageReader(gbuf), 120, 120, 350, 220)
 
         c.save()
         buffer.seek(0)
 
-        # ===== BUTTON DOWNLOAD =====
         st.download_button(
-            label="📥 Download Hasil Prediksi (PDF)",
-            data=buffer,
+            "📥 Download Hasil Prediksi (PDF)",
+            buffer,
             file_name="hasil_prediksi_kaktus.pdf",
-            mime="application/pdf",
-            key="download_pdf"
+            mime="application/pdf"
         )
