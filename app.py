@@ -159,13 +159,14 @@ st.markdown(page_bg, unsafe_allow_html=True)
 # =========================================================
 @st.cache_resource
 def load_tflite():
-    interpreter = tf.lite.Interpreter(model_path="model_kaktus.tflite")
+    interpreter = tf.lite.Interpreter(model_path="mobilenetv2_kaktus.tflite")
     interpreter.allocate_tensors()
     return interpreter
 
 interpreter = load_tflite()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
+
 
 # label kelas
 labels = ["Astrophytum Asteria", "Cereus", "Ferocactus", "Gymnocalycium", "Opuntia"]
