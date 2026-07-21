@@ -168,7 +168,7 @@ input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
 # label kelas
-labels = ["Astrophytum Asteria", "Ferocactus", "Gymnocalycium"]
+labels = ["Astrophytum Asteria", "Cereus", "Ferocactus", "Gymnocalycium", "Opuntia"]
 
 # =========================================================
 # FUNCTION PREDIKSI
@@ -243,7 +243,7 @@ else:
         st.image(img, width=280)
 
         # PREDIKSI (Menggunakan model_kaktus yang sudah di-load)
-        preds = predict(img, mobilenetv2_kaktus)
+        preds = predict(img)
         # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
         # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
         probs = preds / np.sum(preds)
