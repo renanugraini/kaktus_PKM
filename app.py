@@ -242,8 +242,8 @@ else:
         img = Image.open(uploaded).convert("RGB")
         st.image(img, width=280)
 
-        # Prediksi menggunakan model TensorFlow Lite
-        preds = predict(img)
+        # PREDIKSI (Menggunakan model_kaktus yang sudah di-load)
+        preds = predict(img, model_kaktus)
         # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
         # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
         probs = preds / np.sum(preds)
@@ -252,7 +252,7 @@ else:
 
         st.markdown(f"""
         <div class='stCard'>
-        <h3>Hasil Prediksi Jenis Kaktus</h3>
+        <h3>Hasil Analisis Model (CNN - MobileNetV2)</h3>
         <p><b>Prediksi Spesies:</b> {kelas}</p>
         <p><b>Confidence:</b> {conf:.2%}</p>
         <p>Metode yang digunakan adalah algoritma CNN dengan arsitekstur MobileNetV2.</p>
