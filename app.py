@@ -243,7 +243,7 @@ else:
         st.image(img, width=280)
 
         # PREDIKSI (Menggunakan model_kaktus yang sudah di-load)
-        preds = predict(img, model_kaktus)
+        preds = predict(img, mobilenetv2_kaktus)
         # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
         # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
         probs = preds / np.sum(preds)
