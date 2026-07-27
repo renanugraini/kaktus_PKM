@@ -250,9 +250,9 @@ else:
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
-ranking = np.argsort(probs)
-        # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
-        # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
+                # =====================================================
+        # CEK APAKAH GAMBAR TERMASUK DATA LATIH
+        # =====================================================
         ranking = np.argsort(probs)
 
         top1 = probs[ranking[-1]]
@@ -265,77 +265,71 @@ ranking = np.argsort(probs)
         if is_unknown:
 
             st.error(
-        "❌ Gambar tidak termasuk ke dalam lima jenis kaktus yang digunakan pada penelitian ini atau kualitas gambar kurang baik."
-    )
-        # tampilkan pesan error
-        else:
-            
-        # tampilkan hasil klasifikasi
-        # =====================================================
-        # INTERPRETASI HASIL
-        # =====================================================
-        if conf >= 0.80:
-            status = "Sangat yakin"
-        elif conf >= 0.60:
-            status = "Yakin"
-        elif conf >= 0.40:
-            status = "Cukup yakin"
-        elif conf >= 0.20:
-            status = "Rendah"
-        else:
-            status = "Sangat rendah"
-
-        # Warning jika confidence terlalu rendah
-        if conf < 0.20:
-            st.warning(
-                "⚠️ Gambar yang diunggah kemungkinan bukan termasuk lima jenis kaktus yang digunakan dalam penelitian atau kualitas gambar kurang baik."
+                "❌ Gambar tidak termasuk lima jenis kaktus yang digunakan pada penelitian ini atau kualitas gambar kurang baik."
             )
 
-        st.markdown(f"""
-        <div class='stCard'>
-        <h3>Hasil Klasifikasi Model (CNN dengan Arsitektur MobileNetV2)</h3>
-        <p><b>Hasil Klasifikasi:</b> {kelas}</p>
-        <p><b>Tingkat Keyakinan Model:</b> {conf:.2%}</p>
-        <p><b>Interpretasi:</b> {status}</p>
-        <p>Metode yang digunakan adalah algoritma CNN dengan arsitektur MobileNetV2.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # ===== BAR CHART =====
-                # ===== BAR CHART =====
-        ranking = np.argsort(probs)
+        else:
 
-        colors = ['#BDBDBD'] * len(probs)
-        colors[ranking[-1]] = '#2ECC71'
-        colors[ranking[-2]] = '#F1C40F'
-        colors[ranking[-3]] = '#E67E22'
-        colors[ranking[-4]] = '#E74C3C'
+            # ==========================
+            # INTERPRETASI
+            # ==========================
+            if conf >= 0.80:
+                status = "Sangat yakin"
+            elif conf >= 0.60:
+                status = "Yakin"
+            elif conf >= 0.40:
+                status = "Cukup yakin"
+            elif conf >= 0.20:
+                status = "Rendah"
+            else:
+                status = "Sangat rendah"
 
-        fig, ax = plt.subplots(figsize=(8,5))
-        ax.bar(labels, probs, color=colors)
+            st.markdown(f"""
+            <div class='stCard'>
+            <h3>Hasil Klasifikasi Model (CNN dengan Arsitektur MobileNetV2)</h3>
+            <p><b>Hasil Klasifikasi:</b> {kelas}</p>
+            <p><b>Tingkat Keyakinan Model:</b> {conf:.2%}</p>
+            <p><b>Interpretasi:</b> {status}</p>
+            <p>Metode yang digunakan adalah algoritma CNN dengan arsitektur MobileNetV2.</p>
+            </div>
+            """, unsafe_allow_html=True)
 
-        ax.set_ylim(0,1)
-        ax.set_ylabel("Probabilitas")
-        ax.set_xlabel("Jenis Kaktus")
-        ax.set_title("Hasil Klasifikasi Setiap Jenis Kaktus")
+            # ==========================
+            # GRAFIK
+            # ==========================
+            ranking = np.argsort(probs)
 
-        ax.axhline(
-            y=0.20,
-            color='gray',
-            linestyle='--',
-            linewidth=1
-        )
+            colors = ['#BDBDBD'] * len(probs)
+            colors[ranking[-1]] = '#2ECC71'
+            colors[ranking[-2]] = '#F1C40F'
+            colors[ranking[-3]] = '#E67E22'
+            colors[ranking[-4]] = '#E74C3C'
 
-        ax.text(
-            4.15,
-            0.215,
-            "Threshold 0.20",
-            fontsize=9,
-            color="gray"
-        )
+            fig, ax = plt.subplots(figsize=(8,5))
+            ax.bar(labels, probs, color=colors)
 
-        plt.xticks(rotation=35)
-        st.pyplot(fig)
+            ax.set_ylim(0,1)
+            ax.set_ylabel("Probabilitas")
+            ax.set_xlabel("Jenis Kaktus")
+            ax.set_title("Hasil Klasifikasi Setiap Jenis Kaktus")
+
+            ax.axhline(
+                y=0.20,
+                color="gray",
+                linestyle="--",
+                linewidth=1
+            )
+
+            ax.text(
+                4.15,
+                0.215,
+                "Threshold 0.20",
+                fontsize=9,
+                color="gray"
+            )
+
+            plt.xticks(rotation=35)
+            st.pyplot(fig)
 
         # ===== PDF =====
         buffer = io.BytesIO()
