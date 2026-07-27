@@ -251,24 +251,25 @@ else:
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
-        # Interpretasi tingkat keyakinan
-if conf >= 0.80:
-    status = "Sangat yakin"
-elif conf >= 0.60:
-    status = "Yakin"
-elif conf >= 0.40:
-    status = "Cukup yakin"
-elif conf >= 0.20:
-    status = "Rendah"
-else:
-    status = "Sangat rendah"
+        # =====================================================
+        # INTERPRETASI HASIL
+        # =====================================================
+        if conf >= 0.80:
+            status = "Sangat yakin"
+        elif conf >= 0.60:
+            status = "Yakin"
+        elif conf >= 0.40:
+            status = "Cukup yakin"
+        elif conf >= 0.20:
+            status = "Rendah"
+        else:
+            status = "Sangat rendah"
 
-# Warning jika confidence terlalu rendah
-if conf < 0.20:
-    st.warning(
-        "⚠️ Gambar yang diunggah kemungkinan bukan termasuk lima jenis kaktus "
-        "yang digunakan dalam penelitian atau kualitas gambar kurang baik."
-    )
+        # Warning jika confidence terlalu rendah
+        if conf < 0.20:
+            st.warning(
+                "⚠️ Gambar yang diunggah kemungkinan bukan termasuk lima jenis kaktus yang digunakan dalam penelitian atau kualitas gambar kurang baik."
+            )
 
         st.markdown(f"""
         <div class='stCard'>
@@ -276,51 +277,44 @@ if conf < 0.20:
         <p><b>Hasil Klasifikasi:</b> {kelas}</p>
         <p><b>Tingkat Keyakinan Model:</b> {conf:.2%}</p>
         <p><b>Interpretasi:</b> {status}</p>
-        <p>Metode yang digunakan adalah algoritma CNN dengan arsitekstur MobileNetV2.</p>
+        <p>Metode yang digunakan adalah algoritma CNN dengan arsitektur MobileNetV2.</p>
         </div>
         """, unsafe_allow_html=True)
-
+        
         # ===== BAR CHART =====
-        fig, ax = plt.subplots()
-        # warna berdasarkan ranking probabilitas
-ranking = np.argsort(probs)
+                # ===== BAR CHART =====
+        ranking = np.argsort(probs)
 
-colors = ['#BDBDBD'] * len(probs)   # abu (terendah)
+        colors = ['#BDBDBD'] * len(probs)
+        colors[ranking[-1]] = '#2ECC71'
+        colors[ranking[-2]] = '#F1C40F'
+        colors[ranking[-3]] = '#E67E22'
+        colors[ranking[-4]] = '#E74C3C'
 
-colors[ranking[-1]] = '#2ECC71'     # hijau (tertinggi)
-colors[ranking[-2]] = '#F1C40F'     # kuning
-colors[ranking[-3]] = '#E67E22'     # oranye
-colors[ranking[-4]] = '#E74C3C'     # merah
+        fig, ax = plt.subplots(figsize=(8,5))
+        ax.bar(labels, probs, color=colors)
 
-fig, ax = plt.subplots(figsize=(8,5))
-
-bars = ax.bar(labels, probs, color=colors)
-
-ax.set_ylim(0,1)
-
-ax.set_ylabel("Probabilitas")
-
-ax.set_xlabel("Jenis Kaktus")
-
-ax.set_title("Hasil Klasifikasi Setiap Jenis Kaktus")
-
-plt.xticks(rotation=35)
         ax.set_ylim(0,1)
-ax.axhline(
-    y=0.20,
-    color='gray',
-    linestyle='--',
-    linewidth=1
-)
+        ax.set_ylabel("Probabilitas")
+        ax.set_xlabel("Jenis Kaktus")
+        ax.set_title("Hasil Klasifikasi Setiap Jenis Kaktus")
 
-ax.text(
-    4.4,
-    0.215,
-    'Threshold 0.20',
-    fontsize=9,
-    color='gray'
-)
-        plt.xticks(rotation=45)
+        ax.axhline(
+            y=0.20,
+            color='gray',
+            linestyle='--',
+            linewidth=1
+        )
+
+        ax.text(
+            4.15,
+            0.215,
+            "Threshold 0.20",
+            fontsize=9,
+            color="gray"
+        )
+
+        plt.xticks(rotation=35)
         st.pyplot(fig)
 
         # ===== PDF =====
