@@ -262,13 +262,20 @@ elif conf >= 0.20:
     status = "Rendah"
 else:
     status = "Sangat rendah"
-    <p><b>Interpretasi:</b> {status}</p>
+
+# Warning jika confidence terlalu rendah
+if conf < 0.20:
+    st.warning(
+        "⚠️ Gambar yang diunggah kemungkinan bukan termasuk lima jenis kaktus "
+        "yang digunakan dalam penelitian atau kualitas gambar kurang baik."
+    )
 
         st.markdown(f"""
         <div class='stCard'>
         <h3>Hasil Klasifikasi Model (CNN dengan Arsitektur MobileNetV2)</h3>
         <p><b>Hasil Klasifikasi:</b> {kelas}</p>
         <p><b>Tingkat Keyakinan Model:</b> {conf:.2%}</p>
+        <p><b>Interpretasi:</b> {status}</p>
         <p>Metode yang digunakan adalah algoritma CNN dengan arsitekstur MobileNetV2.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -356,6 +363,7 @@ ax.text(
         c.setFont("Helvetica", 13)
         c.drawString(320, height-260, f"Klasifikasi : {kelas}")
         c.drawString(320, height-280, f"Tingkat Keyakinan : {conf:.2%}")
+        c.drawString(320, height-300, f"Interpretasi : {status}")
         c.drawString(320, height-320, "Metode : CNN (MobileNetV2)")
 
         # ===== Footer =====
