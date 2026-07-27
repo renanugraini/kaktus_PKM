@@ -188,7 +188,7 @@ def predict(img):
 # HALAMAN MENU
 # =========================================================
 
-menu = st.sidebar.radio("Navigasi", ["Informasi Kaktus", "Prediksi Kaktus"])
+menu = st.sidebar.radio("Navigasi", ["Informasi Kaktus", "Klasifikasi Kaktus"])
 
 # =========================================================
 # PAGE 1: INFORMASI KAKTUS
@@ -236,7 +236,7 @@ if menu == "Informasi Kaktus":
 # PAGE 2: PREDIKSI KAKTUS
 # =========================================================
 else:
-    st.markdown("<h1 class='stCard'>🔍 Prediksi Jenis Kaktus</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='stCard'>🔍 Klasifikasi Jenis Kaktus</h1>", unsafe_allow_html=True)
     uploaded = st.file_uploader("Upload gambar kaktus", type=["jpg","jpeg","png"])
 
     if uploaded:
@@ -251,19 +251,68 @@ else:
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
+        # Interpretasi tingkat keyakinan
+if conf >= 0.80:
+    status = "Sangat yakin"
+elif conf >= 0.60:
+    status = "Yakin"
+elif conf >= 0.40:
+    status = "Cukup yakin"
+elif conf >= 0.20:
+    status = "Rendah"
+else:
+    status = "Sangat rendah"
+    <p><b>Interpretasi:</b> {status}</p>
+
         st.markdown(f"""
         <div class='stCard'>
-        <h3>Hasil Analisis Model (CNN - MobileNetV2)</h3>
-        <p><b>Prediksi Spesies:</b> {kelas}</p>
-        <p><b>Confidence:</b> {conf:.2%}</p>
+        <h3>Hasil Klasifikasi Model (CNN dengan Arsitektur MobileNetV2)</h3>
+        <p><b>Hasil Klasifikasi:</b> {kelas}</p>
+        <p><b>Tingkat Keyakinan Model:</b> {conf:.2%}</p>
         <p>Metode yang digunakan adalah algoritma CNN dengan arsitekstur MobileNetV2.</p>
         </div>
         """, unsafe_allow_html=True)
 
         # ===== BAR CHART =====
         fig, ax = plt.subplots()
-        ax.bar(labels, probs, color='#2ecc71', alpha=0.8)
+        # warna berdasarkan ranking probabilitas
+ranking = np.argsort(probs)
+
+colors = ['#BDBDBD'] * len(probs)   # abu (terendah)
+
+colors[ranking[-1]] = '#2ECC71'     # hijau (tertinggi)
+colors[ranking[-2]] = '#F1C40F'     # kuning
+colors[ranking[-3]] = '#E67E22'     # oranye
+colors[ranking[-4]] = '#E74C3C'     # merah
+
+fig, ax = plt.subplots(figsize=(8,5))
+
+bars = ax.bar(labels, probs, color=colors)
+
+ax.set_ylim(0,1)
+
+ax.set_ylabel("Probabilitas")
+
+ax.set_xlabel("Jenis Kaktus")
+
+ax.set_title("Hasil Klasifikasi Setiap Jenis Kaktus")
+
+plt.xticks(rotation=35)
         ax.set_ylim(0,1)
+ax.axhline(
+    y=0.20,
+    color='gray',
+    linestyle='--',
+    linewidth=1
+)
+
+ax.text(
+    4.4,
+    0.215,
+    'Threshold 0.20',
+    fontsize=9,
+    color='gray'
+)
         plt.xticks(rotation=45)
         st.pyplot(fig)
 
@@ -288,7 +337,7 @@ else:
 
         c.setFillColor(Color(1,1,1))
         c.setFont("Helvetica-Bold", 24)
-        c.drawString(40, height-60, "🌵 Hasil Prediksi Kaktus")
+        c.drawString(40, height-60, "🌵 Hasil Klasifikasi Kaktus")
 
         # Card Putih
         c.setFillColor(Color(1,1,1))
@@ -305,8 +354,8 @@ else:
         c.setFont("Helvetica-Bold", 16)
         c.drawString(320, height-240, "Detail Klasifikasi")
         c.setFont("Helvetica", 13)
-        c.drawString(320, height-260, f"Prediksi : {kelas}")
-        c.drawString(320, height-280, f"Confidence : {conf:.2%}")
+        c.drawString(320, height-260, f"Klasifikasi : {kelas}")
+        c.drawString(320, height-280, f"Tingkat Keyakinan : {conf:.2%}")
         c.drawString(320, height-320, "Metode : CNN (MobileNetV2)")
 
         # ===== Footer =====
@@ -324,8 +373,8 @@ else:
         buffer.seek(0)
 
         st.download_button(
-            "📥 Download Hasil Prediksi (PDF)",
+            "📥 Download Hasil Klasifikasi (PDF)",
             buffer,
-            file_name="hasil_prediksi_kaktus.pdf",
+            file_name="hasil_klasifikasi_kaktus.pdf",
             mime="application/pdf"
         )
