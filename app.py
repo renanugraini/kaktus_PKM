@@ -274,19 +274,19 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
-            # ==========================
-            # GRAFIK
-            # ==========================
-            ranking = np.argsort(probs)
+        # ==========================
+        # GRAFIK
+        # ==========================
+        ranking = np.argsort(probs)
 
-            colors = ['#BDBDBD'] * len(probs)
-            colors[ranking[-1]] = '#2ECC71'
-            colors[ranking[-2]] = '#F1C40F'
-            colors[ranking[-3]] = '#E67E22'
-            colors[ranking[-4]] = '#E74C3C'
+        colors = ['#BDBDBD'] * len(probs)
+        colors[ranking[-1]] = '#2ECC71'
+        colors[ranking[-2]] = '#F1C40F'
+        colors[ranking[-3]] = '#E67E22'
+        colors[ranking[-4]] = '#E74C3C'
 
-            fig, ax = plt.subplots(figsize=(8,5))
-            ax.bar(labels, probs, color=colors)
+        fig, ax = plt.subplots(figsize=(8,5))
+        ax.bar(labels, probs, color=colors)
 
             ax.set_ylim(0,1)
             ax.set_ylabel("Probabilitas")
@@ -365,12 +365,12 @@ else:
             gbuf.seek(0)
             c.drawImage(ImageReader(gbuf), 120, 120, 350, 220)
     
-        c.save()
-        buffer.seek(0)
+            c.save()
+            buffer.seek(0)
 
-        st.download_button(
-            "📥 Download Hasil Klasifikasi (PDF)",
-            buffer,
-            file_name="hasil_klasifikasi_kaktus.pdf",
-            mime="application/pdf"
-        )
+            st.download_button(
+                "📥 Download Hasil Klasifikasi (PDF)",
+                buffer,
+                file_name="hasil_klasifikasi_kaktus.pdf",
+                mime="application/pdf"
+            )
