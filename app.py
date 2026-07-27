@@ -245,6 +245,12 @@ else:
 
         # PREDIKSI (Menggunakan model_kaktus yang sudah di-load)
         preds = predict(img)
+
+        probs = preds / np.sum(preds)
+        kelas = labels[np.argmax(probs)]
+        conf = np.max(probs)
+
+ranking = np.argsort(probs)
         # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
         # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
         ranking = np.argsort(probs)
@@ -257,6 +263,10 @@ else:
         is_unknown = (top1 < 0.60) or (margin < 0.15)
 
         if is_unknown:
+
+            st.error(
+        "❌ Gambar tidak termasuk ke dalam lima jenis kaktus yang digunakan pada penelitian ini atau kualitas gambar kurang baik."
+    )
         # tampilkan pesan error
         else:
             
