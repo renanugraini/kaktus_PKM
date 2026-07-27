@@ -288,28 +288,28 @@ else:
         fig, ax = plt.subplots(figsize=(8,5))
         ax.bar(labels, probs, color=colors)
 
-            ax.set_ylim(0,1)
-            ax.set_ylabel("Probabilitas")
-            ax.set_xlabel("Jenis Kaktus")
-            ax.set_title("Hasil Klasifikasi Setiap Jenis Kaktus")
+        ax.set_ylim(0,1)
+        ax.set_ylabel("Probabilitas")
+        ax.set_xlabel("Jenis Kaktus")
+        ax.set_title("Hasil Klasifikasi Setiap Jenis Kaktus")
 
-            ax.axhline(
-                y=0.20,
-                color="gray",
-                linestyle="--",
-                linewidth=1
-            )
+        ax.axhline(
+            y=0.20,
+            color="gray",
+            linestyle="--",
+            linewidth=1
+        )
 
-            ax.text(
-                4.15,
-                0.215,
-                "Threshold 0.20",
-                fontsize=9,
-                color="gray"
-            )
+        ax.text(
+            4.15,
+            0.215,
+            "Threshold 0.20",
+            fontsize=9,
+            color="gray"
+        )
 
-            plt.xticks(rotation=35)
-            st.pyplot(fig)
+        plt.xticks(rotation=35)
+        st.pyplot(fig)
 
             # ===== PDF =====
             buffer = io.BytesIO()
