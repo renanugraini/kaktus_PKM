@@ -270,7 +270,7 @@ else:
         """)
 
         # Deteksi kaktus tapi tidak termasuk dataset
-        elif margin < 0.15:
+    elif margin < 0.15:
 
         st.warning("""
         ⚠️ Gambar merupakan tanaman kaktus,
