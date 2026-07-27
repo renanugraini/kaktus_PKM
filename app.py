@@ -247,10 +247,20 @@ else:
         preds = predict(img)
         # Simulasi tampilan perbandingan (karena MobileNetV2 adalah CNN)
         # Di laporan, kamu bisa jelaskan bahwa hasil ini adalah output dari MobileNetV2
-        probs = preds / np.sum(preds)
-        kelas = labels[np.argmax(probs)]
-        conf = np.max(probs)
+        ranking = np.argsort(probs)
 
+        top1 = probs[ranking[-1]]
+        top2 = probs[ranking[-2]]
+
+        margin = top1 - top2
+
+        is_unknown = (top1 < 0.60) or (margin < 0.15)
+
+        if is_unknown:
+        # tampilkan pesan error
+        else:
+            
+        # tampilkan hasil klasifikasi
         # =====================================================
         # INTERPRETASI HASIL
         # =====================================================
