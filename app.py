@@ -260,14 +260,25 @@ else:
 
         margin = top1 - top2
 
-        is_unknown = (top1 < 0.60) or (margin < 0.15)
+        # Deteksi gambar bukan kaktus
+        if top1 < 0.60:
 
-        if is_unknown:
+            st.error("""
+        ❌ Gambar yang diunggah bukan tanaman kaktus.
 
-            st.error(
-                "❌ Gambar tidak termasuk lima jenis kaktus yang digunakan pada penelitian ini atau kualitas gambar kurang baik."
-            )
+        Silakan unggah gambar kaktus.
+        """)
 
+        # Deteksi kaktus tapi tidak termasuk dataset
+        elif margin < 0.15:
+
+        st.warning("""
+        ⚠️ Gambar merupakan tanaman kaktus,
+        namun tidak termasuk ke dalam lima jenis kaktus
+        yang digunakan pada penelitian ini.
+        """)
+
+        # Jika lolos
         else:
 
             # ==========================
