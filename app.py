@@ -250,29 +250,29 @@ else:
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
-            # ==========================
-            # INTERPRETASI
-            # ==========================
-            if conf >= 0.80:
-                status = "Sangat yakin"
-            elif conf >= 0.60:
-                status = "Yakin"
-            elif conf >= 0.40:
-                status = "Cukup yakin"
-            elif conf >= 0.20:
-                status = "Rendah"
-            else:
-                status = "Sangat rendah"
+        # ==========================
+        # INTERPRETASI
+        # ==========================
+        if conf >= 0.80:
+            status = "Sangat yakin"
+        elif conf >= 0.60:
+            status = "Yakin"
+        elif conf >= 0.40:
+            status = "Cukup yakin"
+        elif conf >= 0.20:
+            status = "Rendah"
+        else:
+            status = "Sangat rendah"
 
-            st.markdown(f"""
-            <div class='stCard'>
-            <h3>Hasil Klasifikasi Model (CNN dengan Arsitektur MobileNetV2)</h3>
-            <p><b>Hasil Klasifikasi:</b> {kelas}</p>
-            <p><b>Tingkat Keyakinan Model:</b> {conf:.2%}</p>
-            <p><b>Interpretasi:</b> {status}</p>
-            <p>Metode yang digunakan adalah algoritma CNN dengan arsitektur MobileNetV2.</p>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class='stCard'>
+        <h3>Hasil Klasifikasi Model (CNN dengan Arsitektur MobileNetV2)</h3>
+        <p><b>Hasil Klasifikasi:</b> {kelas}</p>
+        <p><b>Tingkat Keyakinan Model:</b> {conf:.2%}</p>
+        <p><b>Interpretasi:</b> {status}</p>
+        <p>Metode yang digunakan adalah algoritma CNN dengan arsitektur MobileNetV2.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
             # ==========================
             # GRAFIK
@@ -365,8 +365,8 @@ else:
             gbuf.seek(0)
             c.drawImage(ImageReader(gbuf), 120, 120, 350, 220)
     
-            c.save()
-            buffer.seek(0)
+        c.save()
+        buffer.seek(0)
 
         st.download_button(
             "📥 Download Hasil Klasifikasi (PDF)",
