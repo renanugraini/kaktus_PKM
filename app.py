@@ -250,37 +250,6 @@ else:
         kelas = labels[np.argmax(probs)]
         conf = np.max(probs)
 
-        # =====================================================
-        # CEK APAKAH GAMBAR TERMASUK DATA LATIH
-        # =====================================================
-        ranking = np.argsort(probs)
-
-        top1 = probs[ranking[-1]]
-        top2 = probs[ranking[-2]]
-
-        margin = top1 - top2
-
-        # Deteksi gambar bukan kaktus
-        if top1 < 0.60:
-
-            st.error("""
-            ❌ Gambar yang diunggah bukan tanaman kaktus.
-
-            Silakan unggah gambar kaktus.
-            """)
-
-        # Deteksi kaktus tapi tidak termasuk dataset
-        elif margin < 0.15:
-
-            st.warning("""
-            ⚠️ Gambar merupakan tanaman kaktus,
-            namun tidak termasuk ke dalam lima jenis kaktus
-            yang digunakan pada penelitian ini.
-            """)
-
-        # Jika lolos
-        else:
-
             # ==========================
             # INTERPRETASI
             # ==========================
